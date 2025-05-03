@@ -113,23 +113,62 @@ export async function getStockQuote(symbol: string) {
       symbol,
       'quote',
       async () => {
-        const quote = await yahooFinance.quote(symbol);
-        
-        return {
-          symbol: quote.symbol,
-          name: quote.longName || quote.shortName || quote.symbol,
-          price: quote.regularMarketPrice,
-          change: quote.regularMarketChange,
-          changePercent: quote.regularMarketChangePercent,
-          currency: quote.currency,
-          exchangeName: quote.fullExchangeName,
-          marketState: quote.marketState
-        };
+        try {
+          const quote = await yahooFinance.quote(symbol);
+          
+          if (!quote) {
+            console.warn(`No quote data returned for ${symbol}`);
+            return {
+              symbol: symbol,
+              name: symbol,
+              price: null,
+              change: null,
+              changePercent: null,
+              currency: 'USD',
+              exchangeName: null,
+              marketState: null
+            };
+          }
+          
+          return {
+            symbol: quote.symbol || symbol,
+            name: quote.longName || quote.shortName || quote.symbol || symbol,
+            price: quote.regularMarketPrice || null,
+            change: quote.regularMarketChange || null,
+            changePercent: quote.regularMarketChangePercent || null,
+            currency: quote.currency || 'USD',
+            exchangeName: quote.fullExchangeName || null,
+            marketState: quote.marketState || null
+          };
+        } catch (yahooError) {
+          console.error(`Yahoo Finance API error for ${symbol}:`, yahooError);
+          // Return a minimal object with the symbol to prevent further errors
+          return {
+            symbol: symbol,
+            name: symbol,
+            price: null,
+            change: null,
+            changePercent: null,
+            currency: 'USD',
+            exchangeName: null,
+            marketState: null
+          };
+        }
       }
     );
   } catch (error) {
     console.error(`Error fetching quote for ${symbol}:`, error);
-    throw error;
+    // Return a minimal object rather than throwing an error
+    return {
+      symbol: symbol,
+      name: symbol,
+      price: null, 
+      change: null,
+      changePercent: null,
+      currency: 'USD',
+      exchangeName: null,
+      marketState: null
+    };
   }
 }
 
@@ -156,20 +195,42 @@ export async function getStockHistory(symbol: string, period: string = '1mo') {
       `${symbol}_${yahooFinancePeriod}`,
       'history',
       async () => {
-        const result = await yahooFinance.historical(symbol, {
-          period1: '7d',
-          interval: yahooFinancePeriod === '1d' ? '5m' : '1d'
-        });
-        
-        return result.map(item => ({
-          date: item.date.toISOString(),
-          value: item.close
-        }));
+        try {
+          const result = await yahooFinance.historical(symbol, {
+            period1: '7d',
+            interval: yahooFinancePeriod === '1d' ? '5m' : '1d'
+          });
+          
+          if (!result || !Array.isArray(result) || result.length === 0) {
+            console.warn(`No historical data returned for ${symbol}`);
+            // Return sample data point to avoid chart errors
+            return [{
+              date: new Date().toISOString(),
+              value: 0
+            }];
+          }
+          
+          return result.map(item => ({
+            date: item.date.toISOString(),
+            value: item.close
+          }));
+        } catch (yahooError) {
+          console.error(`Yahoo Finance API error for ${symbol} history:`, yahooError);
+          // Return minimal data to prevent rendering errors
+          return [{
+            date: new Date().toISOString(),
+            value: 0
+          }];
+        }
       }
     );
   } catch (error) {
     console.error(`Error fetching history for ${symbol}:`, error);
-    throw error;
+    // Return minimal data instead of throwing
+    return [{
+      date: new Date().toISOString(),
+      value: 0
+    }];
   }
 }
 
