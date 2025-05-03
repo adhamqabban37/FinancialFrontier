@@ -18,13 +18,13 @@ export function Sidebar({ isOpen, onClose, currentStock, onSelectStock }: Sideba
   const [searchQuery, setSearchQuery] = useState("");
 
   // Fetch watchlist from API
-  const { data: watchlist = [] } = useQuery({
+  const { data: watchlist = [] } = useQuery<Stock[]>({
     queryKey: ["/api/stocks/watchlist"],
     refetchOnWindowFocus: false,
   });
 
   // Fetch search results when query changes
-  const { data: searchResults = [] } = useQuery({
+  const { data: searchResults = [] } = useQuery<Stock[]>({
     queryKey: [`/api/stocks/search/${searchQuery}`],
     enabled: searchQuery.length > 1,
   });

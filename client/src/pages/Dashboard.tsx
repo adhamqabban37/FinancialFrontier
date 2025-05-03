@@ -40,7 +40,7 @@ export default function Dashboard() {
   });
 
   // Company info query
-  const { data: companyInfo, isLoading: isCompanyInfoLoading } = useQuery<CompanyInfo | null>({
+  const { data: companyInfo, isLoading: isCompanyInfoLoading } = useQuery<CompanyInfoType | null>({
     queryKey: [`/api/stocks/company/${currentStock}`],
     enabled: !!currentStock,
   });
