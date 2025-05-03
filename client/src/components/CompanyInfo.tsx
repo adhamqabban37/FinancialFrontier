@@ -43,7 +43,7 @@ export function CompanyInfo({ symbol, companyInfo, isLoading }: CompanyInfoProps
     );
   }
 
-  if (!companyInfo) {
+  if (!companyInfo || typeof companyInfo !== 'object') {
     return (
       <Card className="mb-6">
         <CardHeader>

@@ -30,10 +30,10 @@ export function StockChart({ symbol, isLoading, data = [] }: StockChartProps) {
   const chartRef = useRef<HTMLDivElement>(null);
   
   // Format chart data
-  const chartData = data.map(item => ({
+  const chartData = Array.isArray(data) ? data.map(item => ({
     date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
     price: item.value
-  }));
+  })) : [];
   
   // Handle timeframe change
   const handleTimeframeChange = (newTimeframe: TimeframeOption) => {

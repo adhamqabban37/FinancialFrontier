@@ -102,8 +102,7 @@ export function TradingSignals({ data, isLoading }: TradingSignalsProps) {
               {analysis.recommendation || "N/A"}
             </span>
           </div>
-          <Progress value={getBuyRatio()} className="h-2 bg-muted" 
-            indicatorClassName="bg-profit" />
+          <Progress value={getBuyRatio()} className="h-2 bg-muted" />
 
           <div className="grid grid-cols-3 text-center text-sm">
             <div>

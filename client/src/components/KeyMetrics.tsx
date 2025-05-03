@@ -90,7 +90,8 @@ export function KeyMetrics({ metrics, isLoading }: KeyMetricsProps) {
     }
   ];
 
-  const metricsToDisplay = metrics || defaultMetrics;
+  // Make sure metrics is an array
+  const metricsToDisplay = Array.isArray(metrics) ? metrics : defaultMetrics;
 
   const getAssessmentColor = (assessment: string | undefined): string => {
     if (!assessment) return "text-muted-foreground";
