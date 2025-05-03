@@ -196,41 +196,53 @@ export async function getStockHistory(symbol: string, period: string = '1mo') {
       'history',
       async () => {
         try {
-          const result = await yahooFinance.historical(symbol, {
-            period1: '7d',
-            interval: yahooFinancePeriod === '1d' ? '5m' : '1d'
-          });
+          // Calculate proper date range
+          const endDate = new Date();
+          const startDate = new Date();
           
-          if (!result || !Array.isArray(result) || result.length === 0) {
-            console.warn(`No historical data returned for ${symbol}`);
-            // Return sample data point to avoid chart errors
-            return [{
-              date: new Date().toISOString(),
-              value: 0
-            }];
+          // Set start date based on selected period
+          if (yahooFinancePeriod === '1d') {
+            startDate.setDate(startDate.getDate() - 1);
+          } else if (yahooFinancePeriod === '5d') {
+            startDate.setDate(startDate.getDate() - 7);
+          } else if (yahooFinancePeriod === '1mo') {
+            startDate.setMonth(startDate.getMonth() - 1);
+          } else if (yahooFinancePeriod === '3mo') {
+            startDate.setMonth(startDate.getMonth() - 3);
+          } else if (yahooFinancePeriod === '1y') {
+            startDate.setFullYear(startDate.getFullYear() - 1);
+          } else {
+            // Default to 1 month
+            startDate.setMonth(startDate.getMonth() - 1);
           }
           
-          return result.map(item => ({
-            date: item.date.toISOString(),
+          // Use chart() instead of historical() as it's more reliable
+          const result = await yahooFinance.chart(symbol, {
+            period1: startDate,
+            period2: endDate,
+            interval: yahooFinancePeriod === '1d' ? '1h' : '1d'
+          });
+          
+          if (!result || !result.quotes || result.quotes.length === 0) {
+            console.warn(`No historical data returned for ${symbol}`);
+            return [];
+          }
+          
+          return result.quotes.map(item => ({
+            date: new Date(item.timestamp * 1000).toISOString(),
             value: item.close
           }));
         } catch (yahooError) {
           console.error(`Yahoo Finance API error for ${symbol} history:`, yahooError);
-          // Return minimal data to prevent rendering errors
-          return [{
-            date: new Date().toISOString(),
-            value: 0
-          }];
+          // Return empty array - component will handle this more gracefully
+          return [];
         }
       }
     );
   } catch (error) {
     console.error(`Error fetching history for ${symbol}:`, error);
-    // Return minimal data instead of throwing
-    return [{
-      date: new Date().toISOString(),
-      value: 0
-    }];
+    // Return empty array - component will handle this more gracefully
+    return [];
   }
 }
 
