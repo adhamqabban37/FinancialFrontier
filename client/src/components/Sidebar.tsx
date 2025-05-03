@@ -25,7 +25,7 @@ export function Sidebar({ isOpen, onClose, currentStock, onSelectStock }: Sideba
 
   // Fetch search results when query changes
   const { data: searchResults = [] } = useQuery({
-    queryKey: ["/api/stocks/search", searchQuery],
+    queryKey: [`/api/stocks/search/${searchQuery}`],
     enabled: searchQuery.length > 1,
   });
 

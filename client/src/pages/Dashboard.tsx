@@ -9,6 +9,7 @@ import { CompanyInfo } from "@/components/CompanyInfo";
 import { TradingSignals } from "@/components/TradingSignals";
 import { NewsHeadlines } from "@/components/NewsHeadlines";
 import { useMobile } from "@/hooks/use-mobile";
+import { Stock, StockHistory, StockMetric, CompanyInfo as CompanyInfoType, TradingSignal, NewsItem } from "@/types/stock";
 
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -21,38 +22,38 @@ export default function Dashboard() {
   });
 
   // Stock data query
-  const { data: stockData, isLoading: isStockLoading } = useQuery({
-    queryKey: ["/api/stocks", currentStock],
+  const { data: stockData, isLoading: isStockLoading } = useQuery<Stock | null>({
+    queryKey: [`/api/stocks/${currentStock}`],
     enabled: !!currentStock,
   });
 
   // Price history query
-  const { data: priceHistory, isLoading: isPriceHistoryLoading } = useQuery({
-    queryKey: ["/api/stocks/history", currentStock],
+  const { data: priceHistory, isLoading: isPriceHistoryLoading } = useQuery<StockHistory[]>({
+    queryKey: [`/api/stocks/history/${currentStock}`],
     enabled: !!currentStock,
   });
 
   // Financial metrics query
-  const { data: metrics, isLoading: isMetricsLoading } = useQuery({
-    queryKey: ["/api/stocks/metrics", currentStock],
+  const { data: metrics, isLoading: isMetricsLoading } = useQuery<StockMetric[] | null>({
+    queryKey: [`/api/stocks/metrics/${currentStock}`],
     enabled: !!currentStock,
   });
 
   // Company info query
-  const { data: companyInfo, isLoading: isCompanyInfoLoading } = useQuery({
-    queryKey: ["/api/stocks/company", currentStock],
+  const { data: companyInfo, isLoading: isCompanyInfoLoading } = useQuery<CompanyInfo | null>({
+    queryKey: [`/api/stocks/company/${currentStock}`],
     enabled: !!currentStock,
   });
 
   // Trading signals query
-  const { data: tradingSignals, isLoading: isTradingSignalsLoading } = useQuery({
-    queryKey: ["/api/stocks/trading-signals", currentStock],
+  const { data: tradingSignals, isLoading: isTradingSignalsLoading } = useQuery<TradingSignal | null>({
+    queryKey: [`/api/stocks/trading-signals/${currentStock}`],
     enabled: !!currentStock,
   });
 
   // News query
-  const { data: newsItems, isLoading: isNewsLoading } = useQuery({
-    queryKey: ["/api/stocks/news", currentStock],
+  const { data: newsItems, isLoading: isNewsLoading } = useQuery<NewsItem[] | null>({
+    queryKey: [`/api/stocks/news/${currentStock}`],
     enabled: !!currentStock,
   });
 
