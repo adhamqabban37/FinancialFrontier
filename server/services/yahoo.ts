@@ -196,41 +196,44 @@ export async function getStockHistory(symbol: string, period: string = '1mo') {
       'history',
       async () => {
         try {
-          // Calculate proper date range
-          const endDate = new Date();
-          const startDate = new Date();
+          // Use historical with proper date range settings
+          // Yahoo finance expects either a period string or dates
+          // Instead of trying to pass Date objects directly, use built-in periods
           
-          // Set start date based on selected period
+          // Map our timeframes to yahoo-finance2 module parameters
+          let interval = '1d'; // default to daily data
+          let range;
+          
           if (yahooFinancePeriod === '1d') {
-            startDate.setDate(startDate.getDate() - 1);
+            range = '1d';
+            interval = '5m'; // 5-minute intervals for 1-day view
           } else if (yahooFinancePeriod === '5d') {
-            startDate.setDate(startDate.getDate() - 7);
+            range = '5d';
+            interval = '60m'; // hourly for 5-day view
           } else if (yahooFinancePeriod === '1mo') {
-            startDate.setMonth(startDate.getMonth() - 1);
+            range = '1mo';
           } else if (yahooFinancePeriod === '3mo') {
-            startDate.setMonth(startDate.getMonth() - 3);
+            range = '3mo';
           } else if (yahooFinancePeriod === '1y') {
-            startDate.setFullYear(startDate.getFullYear() - 1);
+            range = '1y';
           } else {
-            // Default to 1 month
-            startDate.setMonth(startDate.getMonth() - 1);
+            range = 'max';
           }
           
-          // Use chart() instead of historical() as it's more reliable
-          const result = await yahooFinance.chart(symbol, {
-            period1: startDate,
-            period2: endDate,
-            interval: yahooFinancePeriod === '1d' ? '1h' : '1d'
+          // Use historical with range parameter instead of specific dates
+          const result = await yahooFinance.historical(symbol, {
+            period: range,
+            interval: interval
           });
           
-          if (!result || !result.quotes || result.quotes.length === 0) {
+          if (!result || !Array.isArray(result) || result.length === 0) {
             console.warn(`No historical data returned for ${symbol}`);
             return [];
           }
           
-          return result.quotes.map(item => ({
-            date: new Date(item.timestamp * 1000).toISOString(),
-            value: item.close
+          return result.map(item => ({
+            date: item.date.toISOString(),
+            value: item.close || 0
           }));
         } catch (yahooError) {
           console.error(`Yahoo Finance API error for ${symbol} history:`, yahooError);
