@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -40,34 +42,35 @@
     --chart-4: 36 100% 50%;
     --chart-5: 262 83% 58%;
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 0 0% 13%;
+    --sidebar-background: 210 40% 98%;
+    --sidebar-foreground: 210 40% 10%;
     --sidebar-primary: 208 84% 51%;
     --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-secondary: 208 84% 97%;
     --sidebar-accent: 36 100% 50%;
     --sidebar-accent-foreground: 0 0% 13%;
-    --sidebar-border: 0 0% 90%;
+    --sidebar-border: 208 20% 90%;
     --sidebar-ring: 208 84% 51%;
   }
  
   .dark {
-    --background: 0 0% 7%;
-    --foreground: 0 0% 88%;
+    --background: 225 10% 7%;
+    --foreground: 225 5% 90%;
     
-    --card: 0 0% 12%;
-    --card-foreground: 0 0% 88%;
+    --card: 225 10% 10%;
+    --card-foreground: 225 5% 90%;
     
-    --popover: 0 0% 12%;
-    --popover-foreground: 0 0% 88%;
+    --popover: 225 10% 10%;
+    --popover-foreground: 225 5% 90%;
     
     --primary: 208 84% 51%;
     --primary-foreground: 0 0% 100%;
     
-    --secondary: 0 0% 15%;
-    --secondary-foreground: 0 0% 88%;
+    --secondary: 225 10% 14%;
+    --secondary-foreground: 225 5% 90%;
     
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 65%;
+    --muted: 225 10% 14%;
+    --muted-foreground: 225 5% 65%;
     
     --accent: 36 100% 50%;
     --accent-foreground: 0 0% 10%;
@@ -75,8 +78,8 @@
     --destructive: 14 100% 50%;
     --destructive-foreground: 0 0% 100%;
     
-    --border: 0 0% 25%;
-    --input: 0 0% 25%;
+    --border: 225 10% 18%;
+    --input: 225 10% 18%;
     --ring: 208 84% 51%;
 
     --chart-1: 208 84% 51%;
@@ -85,13 +88,14 @@
     --chart-4: 36 100% 50%;
     --chart-5: 262 83% 58%;
 
-    --sidebar-background: 0 0% 12%;
-    --sidebar-foreground: 0 0% 88%;
+    --sidebar-background: 222 47% 11%;
+    --sidebar-foreground: 222 5% 90%;
     --sidebar-primary: 208 84% 51%;
     --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-secondary: 222 47% 13%;
     --sidebar-accent: 36 100% 50%;
     --sidebar-accent-foreground: 0 0% 10%;
-    --sidebar-border: 0 0% 25%;
+    --sidebar-border: 222 47% 18%;
     --sidebar-ring: 208 84% 51%;
   }
 
@@ -131,12 +135,46 @@
   }
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap');
-
 .font-inter {
   font-family: 'Inter', sans-serif;
 }
 
 .font-mono {
   font-family: 'Roboto Mono', monospace;
+}
+
+/* Add custom shadows */
+.shadow-card {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.dark .shadow-card {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Improve scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
 }
