@@ -76,7 +76,7 @@ export default function Dashboard() {
 
         <main className="flex-1 overflow-auto p-4 lg:p-6">
           <StockHeader 
-            stock={stockData} 
+            stock={stockData || null} 
             isLoading={isStockLoading} 
           />
 
@@ -85,11 +85,11 @@ export default function Dashboard() {
               <StockChart 
                 symbol={currentStock}
                 isLoading={isPriceHistoryLoading}
-                data={priceHistory}
+                data={priceHistory || []}
               />
               
               <KeyMetrics 
-                metrics={metrics} 
+                metrics={metrics || null} 
                 isLoading={isMetricsLoading}
               />
             </div>
@@ -97,18 +97,18 @@ export default function Dashboard() {
             <div>
               <CompanyInfo 
                 symbol={currentStock} 
-                companyInfo={companyInfo}
+                companyInfo={companyInfo || null}
                 isLoading={isCompanyInfoLoading}
               />
               
               <TradingSignals 
-                data={tradingSignals}
+                data={tradingSignals || null}
                 isLoading={isTradingSignalsLoading}
               />
               
               <NewsHeadlines 
                 symbol={currentStock}
-                news={newsItems}
+                news={newsItems || null}
                 isLoading={isNewsLoading}
               />
             </div>

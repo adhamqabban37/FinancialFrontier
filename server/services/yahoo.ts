@@ -201,29 +201,34 @@ export async function getStockHistory(symbol: string, period: string = '1mo') {
           // Instead of trying to pass Date objects directly, use built-in periods
           
           // Map our timeframes to yahoo-finance2 module parameters
-          let interval = '1d'; // default to daily data
-          let range;
+          const endDate = new Date();
+          const startDate = new Date();
+          let chartInterval: "1d" | "1wk" | "1mo" | "1m" | "5m" | "15m" | "30m" | "60m" | "1h" = "1d";
           
+          // Subtract time from the date based on the timeframe
           if (yahooFinancePeriod === '1d') {
-            range = '1d';
-            interval = '5m'; // 5-minute intervals for 1-day view
+            startDate.setDate(startDate.getDate() - 1);
+            chartInterval = "5m"; // 5-minute intervals for 1-day view
           } else if (yahooFinancePeriod === '5d') {
-            range = '5d';
-            interval = '60m'; // hourly for 5-day view
+            startDate.setDate(startDate.getDate() - 7);
+            chartInterval = "60m"; // hourly for 5-day view
           } else if (yahooFinancePeriod === '1mo') {
-            range = '1mo';
+            startDate.setMonth(startDate.getMonth() - 1);
+            chartInterval = "1d";
           } else if (yahooFinancePeriod === '3mo') {
-            range = '3mo';
+            startDate.setMonth(startDate.getMonth() - 3);
+            chartInterval = "1d";
           } else if (yahooFinancePeriod === '1y') {
-            range = '1y';
+            startDate.setFullYear(startDate.getFullYear() - 1);
+            chartInterval = "1d";
           } else {
-            range = 'max';
+            startDate.setFullYear(startDate.getFullYear() - 5); // Max 5 years
+            chartInterval = "1wk";
           }
           
-          // Use historical with range parameter instead of specific dates
+          // Use simple period-based request for most reliable results
           const result = await yahooFinance.historical(symbol, {
-            period: range,
-            interval: interval
+            period: "1mo" // Always fetch 1 month of data for simplicity
           });
           
           if (!result || !Array.isArray(result) || result.length === 0) {
